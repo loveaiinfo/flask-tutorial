@@ -9,14 +9,16 @@
               <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="#">首页</a>
               </li>
-              {% if g.user %}
-                <li class="nav-item"><span>{{ g.user['username'] }}</span>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">退出</a>
-              {% else %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">注册</a>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">登录</a>
-              {% endif %}
           </ul>
+          <div class="d-flex ms-auto align-items-center">
+            {% if g.user %}
+                <span class="me-2 text-secondary fs-5">{{ g.user['username'] }}</span>
+                <a class="btn btn-primary" href="{{ url_for('auth.logout') }}">退出</a>
+            {% else %}
+                <a class="btn btn-outline-primary me-2" href="{{ url_for('auth.register') }}">注册</a>
+                <a class="btn btn-primary" href="{{ url_for('auth.login') }}">登录</a>
+            {% endif %}
+          </div>
       </div>
   </div>
 </nav>

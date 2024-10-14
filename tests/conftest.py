@@ -1,8 +1,9 @@
 import os, sys, tempfile, pytest
+from datetime import datetime
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from flaskr import create_app
-from flaskr.db import get_db, init_db
+from flaskr.database import init_db, add_user, User, Post, db
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
@@ -10,21 +11,20 @@ with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
 
 @pytest.fixture
 def app():
-    db_fd, db_path = tempfile.mkstemp()
-
     app = create_app({
         'TESTING': True,
-        'DATABASE': db_path,
+        'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:'
     })
 
     with app.app_context():
         init_db()
-        get_db().executescript(_data_sql)
+        add_user('test', 'test')
+        add_user('other', 'other')
+        post = Post(title='test title', body='test\nbody', author_id=1, created=datetime.strptime('2018-01-01 00:00:00', '%Y-%m-%d %H:%M:%S'))
+        db.session.add(post)
+        db.session.commit()
 
     yield app
-
-    os.close(db_fd)
-    os.unlink(db_path)
 
 
 @pytest.fixture

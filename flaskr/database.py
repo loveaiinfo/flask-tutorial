@@ -10,11 +10,14 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
+def init_db():
+  db.create_all()
+
 @click.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
     with current_app.app_context():
-      db.create_all()
+      init_db()
     click.echo('Initialized the database.')
 
 def init_app(app):

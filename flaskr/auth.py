@@ -1,9 +1,9 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
-
+from sqlalchemy import exc
 from flaskr.database import add_user,db,User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -23,7 +23,8 @@ def register():
         if error is None:
             try:
                 add_user(username, password)
-            except db.IntegrityError:
+            except exc.IntegrityError:
+                db.session.rollback()
                 error = f"User {username} is already registered."
             else:
                 return redirect(url_for("auth.login"))

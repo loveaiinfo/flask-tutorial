@@ -1,7 +1,6 @@
-import os
-import tempfile
+import os, sys, tempfile, pytest
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import pytest
 from flaskr import create_app
 from flaskr.db import get_db, init_db
 
